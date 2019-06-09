@@ -28,6 +28,11 @@ class Clock extends React.Component {
         </div>
           </div>
         <Display />
+        <div id="functionality">
+          {/*this gonna become stop once clicked */}
+          <button id="start_stop">Start</button>
+          <button id="reset">Reset</button>
+        </div>
      </div>
     );
   }
@@ -38,7 +43,7 @@ class Display extends React.Component {
     return(
     <div id="display">
         <div id="timer-label">Session</div>
-        <h1>25:00</h1>
+        <h1 id="time-left">25:00</h1>
      </div>
     );
   }

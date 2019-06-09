@@ -27,7 +27,12 @@ class Clock extends React.Component {
       React.createElement("div", { id: "session-decrement" }, "-"))),
 
 
-      React.createElement(Display, null)));
+      React.createElement(Display, null),
+      React.createElement("div", { id: "functionality" },
+
+      React.createElement("button", { id: "start_stop" }, "Start"),
+      React.createElement("button", { id: "reset" }, "Reset"))));
+
 
 
   }}
@@ -38,7 +43,7 @@ class Display extends React.Component {
     return (
       React.createElement("div", { id: "display" },
       React.createElement("div", { id: "timer-label" }, "Session"),
-      React.createElement("h1", null, "25:00")));
+      React.createElement("h1", { id: "time-left" }, "25:00")));
 
 
   }}
