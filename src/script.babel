@@ -8,46 +8,75 @@ class App extends React.Component {
     );
   }
 }
-
+       
 class Clock extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+     timeLeft: "25:00"
+   }
+  }
+  changeTime(time){
+    this.setState({
+      timeLeft: time
+    });
+  }
   render(){
     return(
-    <div>
-        <div id="break-session">
-        <div id="break-info">
-          <div id="break-label">Break Length</div>
-          <div id="break-increment">+</div>
-          <div id="break-length">5</div>
-          <div id="break-decrement">-</div>
-        </div>
-        <div id="session-info">
-           <div id="session-label">Session Length</div>
-          <div id="session-increment">+</div>
-          <div id="session-length">25</div>
-          <div id="session-decrement">-</div>
-        </div>
-          </div>
-        <Display />
-        <div id="functionality">
-          {/*this gonna become stop once clicked */}
-          <button id="start_stop">Start</button>
-          <button id="reset">Reset</button>
-        </div>
+     <div>
+        <TimeSetting />
+        <Display timeLeft={this.state.timeLeft}/>
+        <TimeFunctionality />
      </div>
     );
   }
 }
 
 class Display extends React.Component {
+  constructor(props){
+    super(props);
+   
+  }
    render(){
     return(
     <div id="display">
         <div id="timer-label">Session</div>
-        <h1 id="time-left">25:00</h1>
+        <h1 id="time-left">{this.props.timeLeft}</h1>
      </div>
     );
   }
 }
-
+class TimeSetting extends React.Component {
+  render(){
+   return(
+     <div>
+        <div id="break-session">
+          <div id="break-info">
+            <div id="break-label">Break Length</div>
+            <div id="break-increment">+</div>
+            <div id="break-length">5</div>
+            <div id="break-decrement">-</div>
+          </div>
+          <div id="session-info">
+             <div id="session-label">Session Length</div>
+            <div id="session-increment">+</div>
+            <div id="session-length">25</div>
+            <div id="session-decrement">-</div>
+          </div>
+       </div>
+       </div>);
+  }
+}
+class TimeFunctionality extends React.Component {
+         render(){
+           return(<div>
+               <div id="functionality">
+          
+          <button id="start_stop">Start</button>
+          <button id="reset">Reset</button>
+        </div>
+             </div>);
+         }
+ }
 
 ReactDOM.render(<App />, document.getElementById("app"));
