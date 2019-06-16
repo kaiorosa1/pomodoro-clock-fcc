@@ -81,11 +81,13 @@ class TimeSetting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      breakTime: "5",
-      pomodoroTime: "25" };
+      breakTime: this.props.break,
+      pomodoroTime: this.props.session };
 
     this.incrementTimeByOneBreak = this.incrementTimeByOneBreak.bind(this);
     this.decrementTimeByOneBreak = this.decrementTimeByOneBreak.bind(this);
+    this.incrementTimeByOnePomodoro = this.incrementTimeByOnePomodoro.bind(this);
+    this.decrementTimeByOnePomodoro = this.decrementTimeByOnePomodoro.bind(this);
   }
   incrementTimeByOneBreak() {
     let addBreakTime = Number(this.state.breakTime) + 1;
@@ -98,6 +100,20 @@ class TimeSetting extends React.Component {
     if (subtractBreakTime >= 0) {
       this.setState({
         breakTime: subtractBreakTime });
+
+    }
+  }
+  incrementTimeByOnePomodoro() {
+    let addPomodoroTime = Number(this.state.pomodoroTime) + 1;
+    this.setState({
+      pomodoroTime: addPomodoroTime });
+
+  }
+  decrementTimeByOnePomodoro() {
+    let subtractPomodoroTime = Number(this.state.pomodoroTime) - 1;
+    if (subtractPomodoroTime >= 0) {
+      this.setState({
+        pomodoroTime: subtractPomodoroTime });
 
     }
   }
@@ -115,9 +131,9 @@ class TimeSetting extends React.Component {
 
       React.createElement("div", { id: "session-info" },
       React.createElement("div", { id: "session-label" }, "Session Length"),
-      React.createElement("div", { id: "session-increment" }, "+"),
+      React.createElement("div", { id: "session-increment", onClick: this.incrementTimeByOnePomodoro }, "+"),
       React.createElement("div", { id: "session-length" }, this.state.pomodoroTime),
-      React.createElement("div", { id: "session-decrement" }, "-")))));
+      React.createElement("div", { id: "session-decrement", onClick: this.decrementTimeByOnePomodoro }, "-")))));
 
 
 
@@ -132,6 +148,7 @@ class TimeFunctionality extends React.Component {
   }
   startClock() {
     this.props.isOn(true);
+    // set this time equals to the time in the session length
     let x = 1500;
     setInterval(() => {
       this.props.runClock(x);
