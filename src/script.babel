@@ -1,55 +1,59 @@
 class App extends React.Component {
-  render(){
-    return(
-    <div>
+  render() {
+    return (
+      <div>
         <h1>Pomodoro Clock (FCC)</h1>
         <Clock />
-     </div>
+      </div>
     );
   }
 }
-       
+
 class Clock extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-     timeLeft: "25:00"
-   }
+      timeLeft: "25:00"
+    };
+    this.changeTime = this.changeTime.bind(this);
   }
-  changeTime(time){
+  changeTime(time) {
     this.setState({
       timeLeft: time
     });
   }
-  render(){
-    return(
-     <div>
+  render() {
+    return (
+      <div>
         <TimeSetting />
-        <Display timeLeft={this.state.timeLeft}/>
-        <TimeFunctionality />
-     </div>
+        <Display timeLeft={this.state.timeLeft} />
+        <TimeFunctionality changeTime={this.changeTime} />
+      </div>
     );
   }
 }
 
 class Display extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-   
   }
-   render(){
-    return(
-    <div id="display">
+  render() {
+    return (
+      <div id="display">
         <div id="timer-label">Session</div>
         <h1 id="time-left">{this.props.timeLeft}</h1>
-     </div>
+      </div>
     );
   }
 }
 class TimeSetting extends React.Component {
-  render(){
-   return(
-     <div>
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div>
         <div id="break-session">
           <div id="break-info">
             <div id="break-label">Break Length</div>
@@ -58,25 +62,55 @@ class TimeSetting extends React.Component {
             <div id="break-decrement">-</div>
           </div>
           <div id="session-info">
-             <div id="session-label">Session Length</div>
+            <div id="session-label">Session Length</div>
             <div id="session-increment">+</div>
             <div id="session-length">25</div>
             <div id="session-decrement">-</div>
           </div>
-       </div>
-       </div>);
+        </div>
+      </div>
+    );
   }
 }
 class TimeFunctionality extends React.Component {
-         render(){
-           return(<div>
-               <div id="functionality">
-          
-          <button id="start_stop">Start</button>
-          <button id="reset">Reset</button>
+  constructor(props) {
+    super(props);
+    this.startClock = this.startClock.bind(this);
+    this.resetClock = this.resetClock.bind(this);
+  }
+  startClock(){
+    this.props.changeTime("10:00");
+  }
+  resetClock(){
+    this.props.changeTime("25:00");
+  }
+  render() {
+    return (
+      <div>
+        <div id="functionality">
+          <button id="start_stop" onClick={this.startClock}>Start</button>
+          <button id="reset"onClick={this.resetClock}>Reset</button>
         </div>
-             </div>);
-         }
- }
+      </div>
+    );
+  }
+}
 
 ReactDOM.render(<App />, document.getElementById("app"));
+
+// function caculateTime(){
+//     let seconds = 1500;
+//     let minutes = Math.round((seconds - 30)/60);
+//     let remainingSeconds = seconds % 60;
+//     if (remainingSeconds < 10) {
+//         remainingSeconds = "0" + remainingSeconds;
+//     }
+//     var result = minutes + ":" + remainingSeconds;
+//     if (seconds == 0) {
+//         clearInterval(countdownTimer);
+//     } else {
+//         seconds--;
+//     }
+//   }
+
+//  let countdownTimer = setInterval('calculateTime()', 1000);

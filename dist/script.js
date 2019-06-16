@@ -15,6 +15,7 @@ class Clock extends React.Component {
     this.state = {
       timeLeft: "25:00" };
 
+    this.changeTime = this.changeTime.bind(this);
   }
   changeTime(time) {
     this.setState({
@@ -26,7 +27,7 @@ class Clock extends React.Component {
       React.createElement("div", null,
       React.createElement(TimeSetting, null),
       React.createElement(Display, { timeLeft: this.state.timeLeft }),
-      React.createElement(TimeFunctionality, null)));
+      React.createElement(TimeFunctionality, { changeTime: this.changeTime })));
 
 
   }}
@@ -35,7 +36,6 @@ class Clock extends React.Component {
 class Display extends React.Component {
   constructor(props) {
     super(props);
-
   }
   render() {
     return (
@@ -47,6 +47,10 @@ class Display extends React.Component {
   }}
 
 class TimeSetting extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       React.createElement("div", null,
@@ -65,18 +69,48 @@ class TimeSetting extends React.Component {
 
 
 
+
   }}
 
 class TimeFunctionality extends React.Component {
+  constructor(props) {
+    super(props);
+    this.startClock = this.startClock.bind(this);
+    this.resetClock = this.resetClock.bind(this);
+  }
+  startClock() {
+    this.props.changeTime("10:00");
+  }
+  resetClock() {
+    this.props.changeTime("25:00");
+  }
   render() {
-    return React.createElement("div", null,
-    React.createElement("div", { id: "functionality" },
+    return (
+      React.createElement("div", null,
+      React.createElement("div", { id: "functionality" },
+      React.createElement("button", { id: "start_stop", onClick: this.startClock }, "Start"),
+      React.createElement("button", { id: "reset", onClick: this.resetClock }, "Reset"))));
 
-    React.createElement("button", { id: "start_stop" }, "Start"),
-    React.createElement("button", { id: "reset" }, "Reset")));
 
 
   }}
 
 
 ReactDOM.render(React.createElement(App, null), document.getElementById("app"));
+
+// function caculateTime(){
+//     let seconds = 1500;
+//     let minutes = Math.round((seconds - 30)/60);
+//     let remainingSeconds = seconds % 60;
+//     if (remainingSeconds < 10) {
+//         remainingSeconds = "0" + remainingSeconds;
+//     }
+//     var result = minutes + ":" + remainingSeconds;
+//     if (seconds == 0) {
+//         clearInterval(countdownTimer);
+//     } else {
+//         seconds--;
+//     }
+//   }
+
+//  let countdownTimer = setInterval('calculateTime()', 1000);
