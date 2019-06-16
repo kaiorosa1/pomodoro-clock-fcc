@@ -14,8 +14,12 @@ class Clock extends React.Component {
     super(props);
     this.state = {
       timeLeft: "25:00",
-      started: false };
+      started: false,
+      break: "5",
+      session: "25" };
 
+    this.getBreakValue = this.getBreakValue.bind(this);
+    this.getSessionValue = this.getSessionValue.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.runClock = this.runClock.bind(this);
     this.hasStarted = this.hasStarted.bind(this);
@@ -30,6 +34,7 @@ class Clock extends React.Component {
       }
       let result = minutes + ":" + remainingSeconds;
       if (seconds == 0) {
+        // stop when the seconds get to zero
         clearInterval();
       } else {
         seconds--;
@@ -38,6 +43,16 @@ class Clock extends React.Component {
         timeLeft: result });
 
     }
+  }
+  getBreakValue(time) {
+    this.setState({
+      break: time });
+
+  }
+  getSessionValue(time) {
+    this.setState({
+      session: time });
+
   }
   changeTime(time) {
     this.setState({
@@ -52,12 +67,20 @@ class Clock extends React.Component {
   render() {
     return (
       React.createElement("div", null,
-      React.createElement(TimeSetting, null),
-      React.createElement(Display, { timeLeft: this.state.timeLeft }),
+      React.createElement(TimeSetting, {
+        getBreakTime: this.getBreakValue,
+        getSessionTime: this.getSessionValue }),
+
+      React.createElement(Display, {
+        sessionTime: this.state.session,
+        timeLeft: this.state.timeLeft }),
+
       React.createElement(TimeFunctionality, {
         runClock: this.runClock,
         changeTime: this.changeTime,
-        isOn: this.hasStarted })));
+        isOn: this.hasStarted,
+        breakTime: this.state.break,
+        sessionTime: this.state.session })));
 
 
 
@@ -81,8 +104,8 @@ class TimeSetting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      breakTime: this.props.break,
-      pomodoroTime: this.props.session };
+      breakTime: "5",
+      sessionTime: "25" };
 
     this.incrementTimeByOneBreak = this.incrementTimeByOneBreak.bind(this);
     this.decrementTimeByOneBreak = this.decrementTimeByOneBreak.bind(this);
@@ -94,6 +117,7 @@ class TimeSetting extends React.Component {
     this.setState({
       breakTime: addBreakTime });
 
+    this.props.getBreakTime(addBreakTime);
   }
   decrementTimeByOneBreak() {
     let subtractBreakTime = Number(this.state.breakTime) - 1;
@@ -102,20 +126,23 @@ class TimeSetting extends React.Component {
         breakTime: subtractBreakTime });
 
     }
+    this.props.getBreakTime(subtractBreakTime);
   }
   incrementTimeByOnePomodoro() {
-    let addPomodoroTime = Number(this.state.pomodoroTime) + 1;
+    let addPomodoroTime = Number(this.state.sessionTime) + 1;
     this.setState({
-      pomodoroTime: addPomodoroTime });
+      sessionTime: addPomodoroTime });
 
+    this.props.getSessionTime(addPomodoroTime);
   }
   decrementTimeByOnePomodoro() {
-    let subtractPomodoroTime = Number(this.state.pomodoroTime) - 1;
+    let subtractPomodoroTime = Number(this.state.sessionTime) - 1;
     if (subtractPomodoroTime >= 0) {
       this.setState({
-        pomodoroTime: subtractPomodoroTime });
+        sessionTime: subtractPomodoroTime });
 
     }
+    this.props.getSessionTime(subtractPomodoroTime);
   }
   render() {
     return (
@@ -132,7 +159,7 @@ class TimeSetting extends React.Component {
       React.createElement("div", { id: "session-info" },
       React.createElement("div", { id: "session-label" }, "Session Length"),
       React.createElement("div", { id: "session-increment", onClick: this.incrementTimeByOnePomodoro }, "+"),
-      React.createElement("div", { id: "session-length" }, this.state.pomodoroTime),
+      React.createElement("div", { id: "session-length" }, this.state.sessionTime),
       React.createElement("div", { id: "session-decrement", onClick: this.decrementTimeByOnePomodoro }, "-")))));
 
 
@@ -149,7 +176,7 @@ class TimeFunctionality extends React.Component {
   startClock() {
     this.props.isOn(true);
     // set this time equals to the time in the session length
-    let x = 1500;
+    let x = Number(this.props.sessionTime) * 60;
     setInterval(() => {
       this.props.runClock(x);
       x--;
