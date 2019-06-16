@@ -13,13 +13,40 @@ class Clock extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timeLeft: "25:00"
+      timeLeft: "25:00",
+      started: false
     };
     this.changeTime = this.changeTime.bind(this);
+    this.runClock = this.runClock.bind(this);
+    this.hasStarted = this.hasStarted.bind(this);
+  }
+  // run the clock time
+  runClock(seconds) {
+    if (this.state.started === true) {
+      let minutes = Math.round((seconds - 30) / 60);
+      let remainingSeconds = seconds % 60;
+      if (remainingSeconds < 10) {
+        remainingSeconds = "0" + remainingSeconds;
+      }
+      let result = minutes + ":" + remainingSeconds;
+      if (seconds == 0) {
+        clearInterval();
+      } else {
+        seconds--;
+      }
+      this.setState({
+        timeLeft: result
+      });
+    }
   }
   changeTime(time) {
     this.setState({
       timeLeft: time
+    });
+  }
+  hasStarted(isOn) {
+    this.setState({
+      started: isOn
     });
   }
   render() {
@@ -27,7 +54,11 @@ class Clock extends React.Component {
       <div>
         <TimeSetting />
         <Display timeLeft={this.state.timeLeft} />
-        <TimeFunctionality changeTime={this.changeTime} />
+        <TimeFunctionality
+          runClock={this.runClock}
+          changeTime={this.changeTime}
+          isOn={this.hasStarted}
+        />
       </div>
     );
   }
@@ -49,22 +80,43 @@ class Display extends React.Component {
 class TimeSetting extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      breakTime: "5",
+      pomodoroTime: "25"
+    };
+    this.incrementTimeByOneBreak = this.incrementTimeByOneBreak.bind(this);
+    this.decrementTimeByOneBreak = this.decrementTimeByOneBreak.bind(this);
   }
-
+  incrementTimeByOneBreak() {
+    let addBreakTime = Number(this.state.breakTime) + 1;
+    this.setState({
+      breakTime: addBreakTime
+    });
+  }
+  decrementTimeByOneBreak() {
+    let subtractBreakTime = Number(this.state.breakTime) - 1;
+    if (subtractBreakTime >= 0) {
+      this.setState({
+        breakTime: subtractBreakTime
+      });
+    }
+  }
   render() {
     return (
       <div>
         <div id="break-session">
           <div id="break-info">
             <div id="break-label">Break Length</div>
-            <div id="break-increment">+</div>
-            <div id="break-length">5</div>
-            <div id="break-decrement">-</div>
+            <div id="break-increment" onClick={this.incrementTimeByOneBreak}>
+              +
+            </div>
+            <div id="break-length">{this.state.breakTime}</div>
+            <div id="break-decrement" onClick={this.decrementTimeByOneBreak}>-</div>
           </div>
           <div id="session-info">
             <div id="session-label">Session Length</div>
             <div id="session-increment">+</div>
-            <div id="session-length">25</div>
+            <div id="session-length">{this.state.pomodoroTime}</div>
             <div id="session-decrement">-</div>
           </div>
         </div>
@@ -78,18 +130,28 @@ class TimeFunctionality extends React.Component {
     this.startClock = this.startClock.bind(this);
     this.resetClock = this.resetClock.bind(this);
   }
-  startClock(){
-    this.props.changeTime("10:00");
+  startClock() {
+    this.props.isOn(true);
+    let x = 1500;
+    setInterval(() => {
+      this.props.runClock(x);
+      x--;
+    }, 1000);
   }
-  resetClock(){
+  resetClock() {
+    this.props.isOn(false);
     this.props.changeTime("25:00");
   }
   render() {
     return (
       <div>
         <div id="functionality">
-          <button id="start_stop" onClick={this.startClock}>Start</button>
-          <button id="reset"onClick={this.resetClock}>Reset</button>
+          <button id="start_stop" onClick={this.startClock}>
+            Start
+          </button>
+          <button id="reset" onClick={this.resetClock}>
+            Reset
+          </button>
         </div>
       </div>
     );
@@ -97,20 +159,3 @@ class TimeFunctionality extends React.Component {
 }
 
 ReactDOM.render(<App />, document.getElementById("app"));
-
-// function caculateTime(){
-//     let seconds = 1500;
-//     let minutes = Math.round((seconds - 30)/60);
-//     let remainingSeconds = seconds % 60;
-//     if (remainingSeconds < 10) {
-//         remainingSeconds = "0" + remainingSeconds;
-//     }
-//     var result = minutes + ":" + remainingSeconds;
-//     if (seconds == 0) {
-//         clearInterval(countdownTimer);
-//     } else {
-//         seconds--;
-//     }
-//   }
-
-//  let countdownTimer = setInterval('calculateTime()', 1000);
