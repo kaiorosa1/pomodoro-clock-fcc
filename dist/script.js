@@ -26,7 +26,7 @@ class Clock extends React.Component {
   }
   // run the clock time
   runClock(seconds) {
-    if (this.state.started === true) {
+    if (this.state.started === true && Number(seconds)) {
       let minutes = Math.round((seconds - 30) / 60);
       let remainingSeconds = seconds % 60;
       if (remainingSeconds < 10) {
@@ -36,13 +36,12 @@ class Clock extends React.Component {
       if (seconds == 0) {
         // stop when the seconds get to zero
         clearInterval();
-      } else {
-        seconds--;
       }
       this.setState({
         timeLeft: result });
 
     }
+
   }
   getBreakValue(time) {
     this.setState({
@@ -78,9 +77,13 @@ class Clock extends React.Component {
       React.createElement(TimeFunctionality, {
         runClock: this.runClock,
         changeTime: this.changeTime,
+        started: this.state.started,
         isOn: this.hasStarted,
         breakTime: this.state.break,
-        sessionTime: this.state.session })));
+        timeLeft: this.state.timeLeft,
+        sessionTime: this.state.session,
+        getBreakTime: this.getBreakValue,
+        getSessionTime: this.getSessionValue })));
 
 
 
@@ -174,7 +177,13 @@ class TimeFunctionality extends React.Component {
     this.resetClock = this.resetClock.bind(this);
   }
   startClock() {
-    this.props.isOn(true);
+    // start-stop toggle
+    if (this.props.started === true) {
+      this.props.isOn(false);
+      this.props.getSessionTime(this.props.timeLeft);
+    } else {
+      this.props.isOn(true);
+    }
     // set this time equals to the time in the session length
     let x = Number(this.props.sessionTime) * 60;
     setInterval(() => {
@@ -184,6 +193,7 @@ class TimeFunctionality extends React.Component {
   }
   resetClock() {
     this.props.isOn(false);
+    this.props.getSessionTime("25");
     this.props.changeTime("25:00");
   }
   render() {
