@@ -15,12 +15,12 @@ class Clock extends React.Component {
     this.state = {
       timeLeft: "25:00",
       started: false,
-      clear: false,
       breakLength: "5",
       sessionLength: "25" };
 
     this.setBreakLength = this.setBreakLength.bind(this);
     this.setSessionLength = this.setSessionLength.bind(this);
+    this.setClear = this.setClear.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.runClock = this.runClock.bind(this);
     this.hasStarted = this.hasStarted.bind(this);
@@ -41,7 +41,7 @@ class Clock extends React.Component {
           started: false });
 
 
-        clearInterval();
+
       } else {
         this.setState({
           timeLeft: result });
@@ -59,6 +59,11 @@ class Clock extends React.Component {
   setSessionLength(time) {
     this.setState({
       sessionLength: time });
+
+  }
+  setClear(val) {
+    this.setState({
+      clear: val });
 
   }
   changeTime(time) {
@@ -86,6 +91,7 @@ class Clock extends React.Component {
 
       React.createElement(TimeFunctionality, {
         started: this.state.started,
+        setClear: this.setClear,
         hasStarted: this.hasStarted,
         runClock: this.runClock,
         timeLeft: this.state.timeLeft,
@@ -180,21 +186,33 @@ class TimeFunctionality extends React.Component {
     this.startClock = this.startClock.bind(this);
   }
   startClock() {
+    let t;
+    let x = Number(this.props.sessionLength) * 60;
     // start-stop toggle
     if (this.props.started === true) {
       this.props.hasStarted(false);
-      // this.props.setSessionLength(this.props.timeLeft);
+
     } else {
       this.props.hasStarted(true);
+      // how to make the timer reach zero apparently it's not doing that
+      if (this.props.timeLeft !== "00:00") {
+        t = setInterval(() => {
+          if (x < 0) {
+            console.log("I'm here");
+            clearInterval(t);
+          }
+          console.log(x);
+          this.props.runClock(String(x));
+          x--;
+
+        }, 1000);
+      }
+
     }
-    // set this time equals to the time in the session length
-    let x = Number(this.props.sessionLength) * 60;
-    setInterval(() => {
-      this.props.runClock(String(x));
-      x--;
-    }, 1000);
+
   }
   resetClock() {
+    // how to stop the setInterval once its clicked?
     this.props.changeTime("25:00");
     this.props.hasStarted(false);
     this.props.setBreakLength("5");
