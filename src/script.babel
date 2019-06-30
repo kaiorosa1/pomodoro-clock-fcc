@@ -18,8 +18,8 @@ class Clock extends React.Component {
       breakLength: "5",
       sessionLength: "25"
     };
-    this.setBreakLength= this.setBreakLength.bind(this);
-    this.setSessionLength= this.setSessionLength.bind(this);
+    this.setBreakLength = this.setBreakLength.bind(this);
+    this.setSessionLength = this.setSessionLength.bind(this);
     this.setClear = this.setClear.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.runClock = this.runClock.bind(this);
@@ -30,34 +30,33 @@ class Clock extends React.Component {
     if (this.state.started === true && Number(seconds)) {
       let minutes = Math.round((seconds - 30) / 60);
       let remainingSeconds = seconds % 60;
+      if(minutes < 10){
+        minutes = "0" + minutes;
+      }
       if (remainingSeconds < 10) {
         remainingSeconds = "0" + remainingSeconds;
       }
-      let result = minutes + ":" + remainingSeconds;
+      let result = String(minutes) + ":" + String(remainingSeconds);
       if (seconds <= 0) {
         // stop when the seconds get to zero
         this.setState({
-          timeLeft: "0:00",
-         started: false,
-         
+          timeLeft: "00:00",
+          started: false
         });
-       
-      }else{
+      } else {
         this.setState({
-        timeLeft: result
+          timeLeft: result
         });
       }
-      
     }
-    
   }
   setBreakLength(time) {
     this.setState({
       breakLength: time
     });
   }
-  setSessionLength(time){
-     this.setState({
+  setSessionLength(time) {
+    this.setState({
       sessionLength: time
     });
   }
@@ -79,23 +78,24 @@ class Clock extends React.Component {
   render() {
     return (
       <div>
-        <TimeSetting 
+        <TimeSetting
+          started={this.state.started}
           breakLength={this.state.breakLength}
           sessionLength={this.state.sessionLength}
           setBreakLength={this.setBreakLength}
           setSessionLength={this.setSessionLength}
-          />
-        <Display 
+        />
+        <Display
           sessionLength={this.state.sessionLength}
-          timeLeft={this.state.timeLeft} 
-          />
+          timeLeft={this.state.timeLeft}
+        />
         <TimeFunctionality
-          started = {this.state.started}
+          started={this.state.started}
           setClear={this.setClear}
           hasStarted={this.hasStarted}
-          runClock = {this.runClock}
-          timeLeft={this.state.timeLeft} 
-          changeTime ={this.changeTime}
+          runClock={this.runClock}
+          timeLeft={this.state.timeLeft}
+          changeTime={this.changeTime}
           breakLength={this.state.breakLength}
           sessionLength={this.state.sessionLength}
           setBreakLength={this.setBreakLength}
@@ -120,40 +120,41 @@ class Display extends React.Component {
   }
 }
 class TimeSetting extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.changeBreak = this.changeBreak.bind(this);
     this.changeSession = this.changeSession.bind(this);
   }
-  changeBreak(e){
+  changeBreak(e) {
     let newBreak;
-    if(e.target.id === "break-increment"){
-      newBreak = Number(this.props.breakLength) + 1;
-      if(newBreak <= 60){
-         this.props.setBreakLength(String(newBreak));
+    if (this.props.started === false) {
+      if (e.target.id === "break-increment") {
+        newBreak = Number(this.props.breakLength) + 1;
+        if (newBreak <= 60) {
+          this.props.setBreakLength(String(newBreak));
+        }
+      } else if (e.target.id === "break-decrement") {
+        newBreak = Number(this.props.breakLength) - 1;
+        if (newBreak > 0) {
+          this.props.setBreakLength(String(newBreak));
+        }
       }
-    }else if(e.target.id === "break-decrement"){
-      newBreak = Number(this.props.breakLength) - 1;
-      if(newBreak > 0){
-         this.props.setBreakLength(String(newBreak));
-      }
-     
     }
-    
   }
-  changeSession(e){
+  changeSession(e) {
     let newSession;
-    if(e.target.id === "session-increment"){
-      newSession = Number(this.props.sessionLength) + 1;
-      if(newSession <= 60){
-         this.props.setSessionLength(String(newSession));
+    if (this.props.started === false) {
+      if (e.target.id === "session-increment") {
+        newSession = Number(this.props.sessionLength) + 1;
+        if (newSession <= 60) {
+          this.props.setSessionLength(String(newSession));
+        }
+      } else if (e.target.id === "session-decrement") {
+        newSession = Number(this.props.sessionLength) - 1;
+        if (newSession > 0) {
+          this.props.setSessionLength(String(newSession));
+        }
       }
-    }else if(e.target.id === "session-decrement"){
-      newSession = Number(this.props.sessionLength) - 1;
-      if(newSession > 0){
-         this.props.setSessionLength(String(newSession));
-      }
-     
     }
   }
   render() {
@@ -166,13 +167,19 @@ class TimeSetting extends React.Component {
               +
             </div>
             <div id="break-length">{this.props.breakLength}</div>
-            <div id="break-decrement" onClick={this.changeBreak}>-</div>
+            <div id="break-decrement" onClick={this.changeBreak}>
+              -
+            </div>
           </div>
           <div id="session-info">
             <div id="session-label">Session Length</div>
-            <div id="session-increment" onClick={this.changeSession}>+</div>
+            <div id="session-increment" onClick={this.changeSession}>
+              +
+            </div>
             <div id="session-length">{this.props.sessionLength}</div>
-            <div id="session-decrement" onClick={this.changeSession}>-</div>
+            <div id="session-decrement" onClick={this.changeSession}>
+              -
+            </div>
           </div>
         </div>
       </div>
@@ -180,38 +187,40 @@ class TimeSetting extends React.Component {
   }
 }
 class TimeFunctionality extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
+    this.state = {
+      id : "0"
+    }
     this.resetClock = this.resetClock.bind(this);
     this.startClock = this.startClock.bind(this);
+    
   }
   startClock() {
-    let t;
-    let x = Number(this.props.sessionLength)*60;
+    var t;
+    let x = Number(this.props.sessionLength) * 60;
     // start-stop toggle
-    if(this.props.started === true){
+    if (this.props.started === true) {
       this.props.hasStarted(false);
-     
-    }else{
+    } 
+    else {
       this.props.hasStarted(true);
       // how to make the timer reach zero apparently it's not doing that
-      if(this.props.timeLeft !== "00:00"){
+       if (this.props.timeLeft !== "00:00") {
+        
         t = setInterval(() => {
-       if(x < 0){
-        console.log("I'm here");
-        clearInterval(t);
-      }
-      console.log(x);
-      this.props.runClock(String(x));
-      x--;
-     
-    }, 1000);
-      }
-     
+          if (x < 0) {
+            
+            clearInterval(t);
+          }
+          this.props.runClock(String(x));
+          x--;
+        }, 1000);
+        
+       }
     }
-
   }
-  resetClock(){
+  resetClock() {
     // how to stop the setInterval once its clicked?
     this.props.changeTime("25:00");
     this.props.hasStarted(false);
