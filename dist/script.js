@@ -42,8 +42,7 @@ class Clock extends React.Component {
       if (seconds <= 0) {
         // stop when the seconds get to zero
         this.setState({
-          timeLeft: "00:00",
-          started: false });
+          timeLeft: "00:00" });
 
       } else {
         this.setState({
@@ -124,7 +123,6 @@ class Display extends React.Component {
       React.createElement("div", { id: "display" },
       React.createElement("div", { id: "timer-label" }, this.props.label),
       React.createElement("h1", { id: "time-left" }, this.props.timeLeft)));
-
 
 
   }}
@@ -212,22 +210,23 @@ class TimeFunctionality extends React.Component {
       this.props.hasStarted(false);
     } else {
       this.props.hasStarted(true);
-      // how to make the timer reach zero apparently it's not doing that
-      if (this.props.timeLeft !== "00:00") {
-        t = setInterval(() => {
-          if (x === 0) {
-            setTimeout(() => {
-              document.getElementById("beep").play();
-            }, 1000);
-            // x = br;
-            this.props.setLabel("Break");
-            clearInterval(t);
-          }
+
+      // if (this.props.timeLeft !== "00:00") {
+      t = setInterval(() => {
+        if (x < 0) {
+          this.props.runClock(String(x));
+          document.getElementById("beep").play();
+
+          // I should be able to call the break here!!
+
+          clearInterval(t);
+        } else {
           x--;
           this.props.runClock(String(x));
-        }, 1000);
-      }
+        }
+      }, 1000);
     }
+    // }
   }
   resetClock() {
     // how to stop the setInterval once its clicked?
@@ -236,12 +235,27 @@ class TimeFunctionality extends React.Component {
     this.props.hasStarted(false);
     this.props.setBreakLength("5");
     this.props.setSessionLength("25");
-    // stop the sound 
+    // stop the sound
     let selected = document.getElementById("beep");
     if (selected.currentTime >= 0) {
       selected.pause();
       selected.currentTime = 0;
     }
+  }
+  breakClock() {
+    let br = Number(this.props.breakLength) * 60;
+    this.props.setLabel("Break");
+    tr = setInterval(() => {
+      if (br < 0) {
+        this.props.setLabel("Session");
+        //x = Number(this.props.sessionLength) * 60;
+        // ideally I should be able to call the startClock here
+        clearInterval(tr);
+      } else {
+        this.props.runClock(String(br));
+        br--;
+      }
+    }, 1000);
   }
   render() {
     return (
@@ -253,11 +267,7 @@ class TimeFunctionality extends React.Component {
       React.createElement("button", { id: "reset", onClick: this.resetClock }, "Reset"),
 
 
-      React.createElement("audio", {
-        controls: true,
-        id: "beep",
-        src: "https://goo.gl/65cBl1" }))));
-
+      React.createElement("audio", { controls: true, id: "beep", src: "https://goo.gl/65cBl1" }))));
 
 
 
