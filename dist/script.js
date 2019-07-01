@@ -16,11 +16,13 @@ class Clock extends React.Component {
       timeLeft: "25:00",
       started: false,
       breakLength: "5",
-      sessionLength: "25" };
+      sessionLength: "25",
+      label: "Session" };
 
     this.setBreakLength = this.setBreakLength.bind(this);
     this.setSessionLength = this.setSessionLength.bind(this);
     this.setClear = this.setClear.bind(this);
+    this.setLabel = this.setLabel.bind(this);
     this.changeTime = this.changeTime.bind(this);
     this.runClock = this.runClock.bind(this);
     this.hasStarted = this.hasStarted.bind(this);
@@ -65,6 +67,11 @@ class Clock extends React.Component {
       clear: val });
 
   }
+  setLabel(val) {
+    this.setState({
+      label: val });
+
+  }
   changeTime(time) {
     this.setState({
       timeLeft: time });
@@ -87,10 +94,12 @@ class Clock extends React.Component {
 
       React.createElement(Display, {
         sessionLength: this.state.sessionLength,
+        label: this.state.label,
         timeLeft: this.state.timeLeft }),
 
       React.createElement(TimeFunctionality, {
         started: this.state.started,
+        setLabel: this.setLabel,
         setClear: this.setClear,
         hasStarted: this.hasStarted,
         runClock: this.runClock,
@@ -113,7 +122,7 @@ class Display extends React.Component {
   render() {
     return (
       React.createElement("div", { id: "display" },
-      React.createElement("div", { id: "timer-label" }, "Session"),
+      React.createElement("div", { id: "timer-label" }, this.props.label),
       React.createElement("h1", { id: "time-left" }, this.props.timeLeft)));
 
 
@@ -189,40 +198,41 @@ class TimeSetting extends React.Component {
 class TimeFunctionality extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      id: "0" };
-
     this.resetClock = this.resetClock.bind(this);
     this.startClock = this.startClock.bind(this);
-
   }
   startClock() {
     var t;
+    var tr;
     let x = Number(this.props.sessionLength) * 60;
+    let br = Number(this.props.breakLength) * 60;
     // start-stop toggle
     if (this.props.started === true) {
       this.props.hasStarted(false);
-    } else
-    {
+    } else {
       this.props.hasStarted(true);
       // how to make the timer reach zero apparently it's not doing that
       if (this.props.timeLeft !== "00:00") {
-
         t = setInterval(() => {
           if (x < 0) {
-
+            setTimeout(() => {}, 1000);
+            // x = br;
+            this.props.setLabel("Break");
             clearInterval(t);
           }
           this.props.runClock(String(x));
+
           x--;
         }, 1000);
-
       }
+
+
     }
   }
   resetClock() {
     // how to stop the setInterval once its clicked?
     this.props.changeTime("25:00");
+    this.props.setLabel("Session");
     this.props.hasStarted(false);
     this.props.setBreakLength("5");
     this.props.setSessionLength("25");
