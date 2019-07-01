@@ -1,6 +1,9 @@
 body{
   background-color: pink;
 }
+audio{
+  display:none;
+}
 #app {
   text-align: center;
 }

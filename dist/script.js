@@ -126,6 +126,7 @@ class Display extends React.Component {
       React.createElement("h1", { id: "time-left" }, this.props.timeLeft)));
 
 
+
   }}
 
 class TimeSetting extends React.Component {
@@ -214,19 +215,18 @@ class TimeFunctionality extends React.Component {
       // how to make the timer reach zero apparently it's not doing that
       if (this.props.timeLeft !== "00:00") {
         t = setInterval(() => {
-          if (x < 0) {
-            setTimeout(() => {}, 1000);
+          if (x === 0) {
+            setTimeout(() => {
+              document.getElementById("beep").play();
+            }, 1000);
             // x = br;
             this.props.setLabel("Break");
             clearInterval(t);
           }
-          this.props.runClock(String(x));
-
           x--;
+          this.props.runClock(String(x));
         }, 1000);
       }
-
-
     }
   }
   resetClock() {
@@ -236,6 +236,12 @@ class TimeFunctionality extends React.Component {
     this.props.hasStarted(false);
     this.props.setBreakLength("5");
     this.props.setSessionLength("25");
+    // stop the sound 
+    let selected = document.getElementById("beep");
+    if (selected.currentTime >= 0) {
+      selected.pause();
+      selected.currentTime = 0;
+    }
   }
   render() {
     return (
@@ -244,8 +250,13 @@ class TimeFunctionality extends React.Component {
       React.createElement("button", { id: "start_stop", onClick: this.startClock }, "Start"),
 
 
-      React.createElement("button", { id: "reset", onClick: this.resetClock }, "Reset"))));
+      React.createElement("button", { id: "reset", onClick: this.resetClock }, "Reset"),
 
+
+      React.createElement("audio", {
+        controls: true,
+        id: "beep",
+        src: "https://goo.gl/65cBl1" }))));
 
 
 
