@@ -2,7 +2,6 @@ class App extends React.Component {
   render() {
     return (
       React.createElement("div", null,
-      React.createElement("h1", null, "Pomodoro Clock"),
       React.createElement(Clock, null)));
 
 
@@ -146,24 +145,26 @@ class Clock extends React.Component {
   }
   render() {
     return (
-      React.createElement("div", null,
-      React.createElement("div", null,
-      React.createElement("h1", null, "Time Setting"),
+      React.createElement("div", { id: "container-clock" },
+      React.createElement("h1", null, "Pomodoro Clock"),
+      React.createElement("div", { id: "clock-full" },
+      React.createElement("div", { id: "time-setting" },
       React.createElement("div", null,
       React.createElement("div", { id: "session-label" }, "Session Length"),
-      React.createElement("span", { id: "session-increment", onClick: this.changeTimeSession }, "+"), React.createElement("span", { id: "session-length" }, this.state.sessionTime), React.createElement("span", { id: "session-decrement", onClick: this.changeTimeSession }, "-")),
+      React.createElement("span", { id: "session-increment", onClick: this.changeTimeSession }, " + "), React.createElement("span", { id: "session-length" }, this.state.sessionTime), React.createElement("span", { id: "session-decrement", onClick: this.changeTimeSession }, " - ")),
 
       React.createElement("div", null,
       React.createElement("div", { id: "break-label" }, "Break Length"),
-      React.createElement("span", { id: "break-increment", onClick: this.changeTimeBreak }, "+"), " ", React.createElement("span", { id: "break-length" }, this.state.breakTime), " ", React.createElement("span", { id: "break-decrement", onClick: this.changeTimeBreak }, "-"))),
+      React.createElement("span", { id: "break-increment", onClick: this.changeTimeBreak }, " + "), React.createElement("span", { id: "break-length" }, this.state.breakTime), " ", React.createElement("span", { id: "break-decrement", onClick: this.changeTimeBreak }, "-"))),
 
 
       React.createElement("div", null,
-      React.createElement("h1", { id: "timer-label" }, this.state.label),
-      React.createElement("h2", { id: "time-left" }, this.state.time + ":" + this.state.minutes),
-      React.createElement("button", { id: "start_stop", onClick: this.runClock }, "start/stop"),
-      React.createElement("button", { id: "reset", onClick: this.resetClock }, "reset"),
-      React.createElement("audio", { controls: true, id: "beep", src: "https://goo.gl/65cBl1" }))));
+      React.createElement("h2", { id: "timer-label" }, this.state.label),
+      React.createElement("h1", { id: "time-left" }, this.state.time + ":" + this.state.minutes),
+      React.createElement("button", { id: "start_stop", class: "btn btn-outline-primary", onClick: this.runClock }, "start/stop"),
+      React.createElement("button", { id: "reset", class: "btn btn-outline-secondary", onClick: this.resetClock }, "reset"),
+      React.createElement("audio", { controls: true, id: "beep", src: "https://goo.gl/65cBl1" })))));
+
 
 
 

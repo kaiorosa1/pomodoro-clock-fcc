@@ -2,7 +2,6 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <h1>Pomodoro Clock</h1>
         <Clock />
       </div>
     );
@@ -146,25 +145,27 @@ class Clock extends React.Component {
   }
   render() {
     return (
-      <div>
-        <div>
-        <h1>Time Setting</h1>
+      <div id="container-clock">
+        <h1>Pomodoro Clock</h1>
+        <div id="clock-full">
+        <div id="time-setting">
           <div>
             <div id="session-label">Session Length</div>
-          <span id="session-increment" onClick={this.changeTimeSession}>+</span><span  id="session-length">{this.state.sessionTime}</span><span id="session-decrement" onClick={this.changeTimeSession}>-</span>
+          <span id="session-increment" onClick={this.changeTimeSession}> + </span><span  id="session-length">{this.state.sessionTime}</span><span id="session-decrement" onClick={this.changeTimeSession}> - </span>
           </div>
           <div >
             <div id="break-label">Break Length</div>
-          <span id="break-increment" onClick={this.changeTimeBreak} >+</span> <span id="break-length">{this.state.breakTime}</span> <span id="break-decrement" onClick={this.changeTimeBreak}>-</span>
+          <span id="break-increment" onClick={this.changeTimeBreak} > + </span><span id="break-length">{this.state.breakTime}</span> <span id="break-decrement" onClick={this.changeTimeBreak}>-</span>
           </div>
       </div>
        <div>
-          <h1 id="timer-label">{this.state.label}</h1>
-          <h2 id="time-left">{this.state.time + ":" + this.state.minutes}</h2>
-          <button id="start_stop" onClick={this.runClock}>start/stop</button>     
-          <button id="reset" onClick={this.resetClock}>reset</button>
+          <h2 id="timer-label">{this.state.label}</h2>
+          <h1 id="time-left">{this.state.time + ":" + this.state.minutes}</h1>
+          <button id="start_stop" class="btn btn-outline-primary" onClick={this.runClock}>start/stop</button>     
+          <button id="reset" class="btn btn-outline-secondary" onClick={this.resetClock}>reset</button>
           <audio controls id="beep" src="https://goo.gl/65cBl1" />
         </div>
+         </div>
       </div>
     );
   }
