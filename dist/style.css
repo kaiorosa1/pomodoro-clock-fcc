@@ -1,28 +1,7 @@
-body{
-  background-color: pink;
-}
-audio{
-  display:none;
-}
-#app {
+#app{
   text-align: center;
 }
-#break-session{
-  display: flex;
-}
-#display{
-  border: 5px solid red;
-}
 
-#break-info{
-  border: 5px solid blue;
-  width: 50%;
-}
-
-#session-info{
-  border: 5px solid blue;
-  width: 50%;
-}
-#functionality{
-  border: 5px solid blue;
+audio{
+  display:none;
 }
